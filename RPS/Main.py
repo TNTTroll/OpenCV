@@ -14,7 +14,10 @@ cameraName = "Camera"
 cam_Width = 640
 cam_Height = 480
 
+size = 20
+
 white = (255, 255, 255)
+black = (0, 0, 0)
 green = (0, 255, 0)
 red = (0, 0, 255)
 
@@ -24,10 +27,11 @@ camera = cv2.VideoCapture(0)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, cam_Width)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_Height)
 
-
 # ---------- Defs
 def printText(text, position, color):
 	text = str(text)
+	cv2.rectangle(frame, (position[0]-size, position[1]-size*2), 
+						 (position[0]+size*5, position[1]+size), black, -1)
 	cv2.putText(frame, text, (position[0], position[1]), 
 				cv2.FONT_HERSHEY_COMPLEX, .7, color, 2)
 
