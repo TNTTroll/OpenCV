@@ -1,7 +1,7 @@
 # Program for English sign language. Use two hands
 # Right is for language; Left is for commands
 # Letters are created accroding to English sign language
-# Commands are created on free way
+# Commands are created on a free way
 
 # Thumb + Index = Update command
 # Thumb + Index = Space
@@ -92,14 +92,16 @@ def startPulsing():
 	position = (cam_Width//10*9, cam_Height//2)
 
 	cv2.circle(frame, position, 48, black, -1)
-	cv2.circle(frame, position, restartPulse*2, white, -1)
+	cv2.circle(frame, position, int(restartPulse), white, -1)
 	
-	restartPulse += 1
+	restartPulse += .65
 
 
 # Restart string 
 def restartString():
-	global string, restartGo
+	global string, restartGo, restartPulse
+
+	restartPulse = 1
 
 	restartGo = True
 	string = ""
