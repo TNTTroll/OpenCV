@@ -90,8 +90,9 @@ def get_noise(points):
     return [a_h, b_h]
 
 
-def find_line(frame, img, border):
+def find_line(frame, img, border, connect):
     points = []
+    
 
     mask = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel = np.ones((5, 5),np.uint8), iterations = 1)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel = np.ones((2, 2),np.uint8), iterations = 1)
@@ -101,7 +102,7 @@ def find_line(frame, img, border):
     stats = output[2]
 
     for i in range (1, num_labels):
-    	points.append([stats[i, cv2.CC_STAT_LEFT], stats[i, cv2.CC_STAT_TOP]])
+    	points.append([stats[i, cv2.CC_STAT_LEFT], stats[i, cv2.CC_STAT_TOP], stats[i, cv2.CC_STAT_WIDTH], stats[i, cv2.CC_STAT_HEIGHT]])
 
     draw = frame.copy()[border[1]+up+10:border[1]+border[4]+up-10, border[2]+left:border[2]+border[3]+left]
     if (len(points) > 10):
@@ -114,9 +115,14 @@ def find_line(frame, img, border):
         y = a*x + b
         cv2.line(draw, (int(x0), int(y0)), (int(x), int(y)), color=(0,0,0), thickness=2)
 
+        for i in range(len(points)):
+        	cv2.rectangle(connect, (points[i][0]+border[2]+left, points[i][1]+border[1]+up+10), 
+        				 (points[i][0] + points[i][2] + border[2] + left, points[i][1] + points[i][3] + border[1] + up), 
+        				 (255, 0, 255), 1)
+
     line = frame.copy()
     line[border[1]+up+10:border[1]+border[4]+up-10, border[2]+left:border[2]+border[3]+left] = draw
-    return line
+    return line, connect
 
 
 # ----- Variables
@@ -177,7 +183,7 @@ while True:
 
 		# <<< Find line
 		find_area = mask[border[1]+up+10:border[1]+border[4]+up-10, border[2]+left:border[2]+border[3]+left]
-		line = find_line(frame, find_area, border)
+		line, connect = find_line(frame, find_area, border, connect)
 
 		# <<< Showing
 		me_texting(frame, "Ordinary")
